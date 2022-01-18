@@ -1,6 +1,13 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { AuthProvider } from './contexts/authContext';
+import Home from './pages/Home';
+import SignUp from './pages/SignUp';
+import SignIn from './pages/SignIn';
+import { AuthProvider } from './contexts/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import ForgotPassword from './pages/ForgotPassword';
+import UpdateProfile from './pages/UpdateProfile';
+
 import './App.css';
 
 function App() {
@@ -10,7 +17,20 @@ function App() {
             <div className='auth-app'>
                <div className='content'>
                   <AuthProvider>
-                     <Switch></Switch>
+                     <Routes>
+                        <PrivateRoute path='/' component={Home} />
+                        <PrivateRoute
+                           path='/update-profile'
+                           component={UpdateProfile}
+                        />
+                        <Route path='/' element={<Home />} />
+                        <Route path='/sign-in' element={<SignIn />} />
+                        <Route path='/sign-up' element={<SignUp />} />
+                        <Route
+                           path='/forgot-password'
+                           element={<ForgotPassword />}
+                        />
+                     </Routes>
                   </AuthProvider>
                </div>
             </div>

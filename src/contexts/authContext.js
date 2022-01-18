@@ -1,24 +1,22 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const AuthContext = createContext();
+const AuthContext = createContext({});
 
 export const useAuth = () => {
    return useContext(AuthContext);
 };
 
 export const AuthProvider = ({ children }) => {
-   const supabaseUrl = process.env.SUPABASE_URL;
-   const supabaseKey = process.env.SUPABASE_KEY;
+   const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+   const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
    const supabase = createClient(supabaseUrl, supabaseKey);
    const { auth } = supabase;
 
    const [currentUser, setCurrentUser] = useState();
    const [loading, setLoading] = useState(true);
 
-   const currentUser = () => {
-      return auth.user();
-   };
+   console.log(auth.user());
 
    const signup = (email, password) => {
       return auth.signUp({ email: email, password: password });
@@ -70,11 +68,12 @@ export const AuthProvider = ({ children }) => {
       const unsubscribe = auth.onAuthStateChange((event, session) => {
          console.log(event, session);
 
-         if (event === 'SIGNED_IN') initialiseUser;
+         if (event === 'SIGNED_IN') initialiseUser();
          setLoading(false);
       });
 
       return unsubscribe;
+      // eslint-disable-next-line
    }, []);
 
    return (
