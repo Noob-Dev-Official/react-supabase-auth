@@ -1,9 +1,4 @@
-import {
-   BrowserRouter as Router,
-   Route,
-   Routes,
-   useRoutes,
-} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import AllRoutes from './AllRoutes';
 import { useAuth } from './contexts/AuthContext';
@@ -17,7 +12,6 @@ function App() {
 
    return (
       <>
-         {/* <Router> */}
          <div className='auth-app'>
             <div className='content'>
                <Router>
@@ -25,7 +19,6 @@ function App() {
                </Router>
             </div>
          </div>
-         {/* </Router> */}
       </>
    );
 }
