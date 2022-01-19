@@ -86,7 +86,7 @@ const Home = () => {
                <h1>Welcome to Dashboard</h1>
                <p className='email'>
                   <strong>Email: </strong>
-                  {currentUser.email}
+                  {/* {currentUser.email} */}
                </p>
                <Link className='update-profile' to='/update-profile'>
                   Update Profile

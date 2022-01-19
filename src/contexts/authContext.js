@@ -14,9 +14,8 @@ export const AuthProvider = ({ children }) => {
    const { auth } = supabase;
 
    const [currentUser, setCurrentUser] = useState();
+   const [isSignedIn, setIsSignedIn] = useState(false);
    const [loading, setLoading] = useState(true);
-
-   console.log(auth.user());
 
    const signup = (email, password) => {
       return auth.signUp({ email: email, password: password });
@@ -42,6 +41,10 @@ export const AuthProvider = ({ children }) => {
       return auth.update({ password: password });
    };
 
+   const user = () => {
+      return auth.user();
+   };
+
    const initialiseUser = () => {
       const user = auth.user();
       let username;
@@ -55,7 +58,9 @@ export const AuthProvider = ({ children }) => {
    };
 
    const value = {
+      isSignedIn,
       currentUser,
+      user,
       signup,
       signin,
       signout,
@@ -68,10 +73,13 @@ export const AuthProvider = ({ children }) => {
       const unsubscribe = auth.onAuthStateChange((event, session) => {
          console.log(event, session);
 
-         if (event === 'SIGNED_IN') initialiseUser();
-         setLoading(false);
+         if (event === 'SIGNED_IN') {
+            initialiseUser();
+            setIsSignedIn(false);
+         }
       });
 
+      setLoading(false);
       return unsubscribe;
       // eslint-disable-next-line
    }, []);
