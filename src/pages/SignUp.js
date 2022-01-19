@@ -64,8 +64,7 @@ const SignUp = () => {
             setSuccess(false);
 
             await signup(email.email, password.password);
-
-            setSuccessMssg(true);
+            setSuccess(true);
             setSuccessMssg('Sign Up successful!');
             hideSuccessMssg();
          } catch (err) {
@@ -114,6 +113,7 @@ const SignUp = () => {
                      name='password'
                      value={password.password}
                      onChange={onPasswordChange}
+                     placeholder='6 characters minimum'
                      required
                   />
                </AuthFormPasswordDiv>
@@ -123,6 +123,7 @@ const SignUp = () => {
                      ref={confirmPasswordRef}
                      type='password'
                      name='password'
+                     placeholder='6 characters minimum'
                      required
                   />
                </AuthFormPasswordDiv>
