@@ -70,17 +70,36 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		const unsubscribe = auth.onAuthStateChange((event, session) => {
-			console.log(event, session);
+		auth.onAuthStateChange((event, session) => {
+			console.log('onAuthStateChange', { event, session });
 
 			if (event === 'SIGNED_IN') {
 				initialiseUser();
-				setIsSignedIn(false);
+				setIsSignedIn(true);
+				console.log('im running');
 			}
 		});
 
+		// const unsubscribe = auth.onAuthStateChange((event, session) => {
+		// 	console.log(event, session);
+
+		// 	if (event === 'SIGNED_IN') {
+		// 		initialiseUser();
+		// setIsSignedIn(true);
+		// console.log('im running');
+		// 	}
+		// });
+
 		setLoading(false);
-		return unsubscribe;
+
+		console.log(isSignedIn);
+
+		return () => {
+			supabase.removeSubscription();
+			console.log('Remove supabase subscription by useEffect unmount');
+		};
+
+		// return unsubscribe;
 		// eslint-disable-next-line
 	}, []);
 
