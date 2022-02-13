@@ -64,10 +64,14 @@ const SignIn = () => {
 			setErrorMssg('Cannot Sign In');
 			setError(true);
 			console.log(err);
-			// hideErrorMssg(); //this was the problem, need to fix it later - Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
+			// hideErrorMssg(); //ERROR: this was the problem, need to fix it later - Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
 		}
 
-		setLoading(false);
+		const timer = setTimeout(() => {
+			setLoading(false);
+		}, 2000);
+
+		return () => clearTimeout(timer);
 	};
 
 	return (
