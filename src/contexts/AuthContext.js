@@ -70,6 +70,7 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
+		console.log('1');
 		auth.onAuthStateChange((event, session) => {
 			console.log('onAuthStateChange', { event, session });
 

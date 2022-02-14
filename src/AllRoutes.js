@@ -9,30 +9,30 @@ import ForgotPassword from './pages/ForgotPassword';
 import UpdateProfile from './pages/UpdateProfile';
 
 const AllRoutes = ({ isSignedIn }) => {
-   let routes = useRoutes([
-      {
-         path: '/',
-         element: isSignedIn ? <Home /> : <Navigate to='/sign-in' />,
-      },
-      {
-         path: '/update-profile',
-         element: isSignedIn ? <UpdateProfile /> : <Navigate to='/sign-in' />,
-      },
-      {
-         path: '/sign-in',
-         element: <SignIn />,
-      },
-      {
-         path: '/sign-up',
-         element: <SignUp />,
-      },
-      {
-         path: '/forgot-password',
-         element: <ForgotPassword />,
-      },
-   ]);
+	let routes = useRoutes([
+		{
+			path: '/',
+			element: isSignedIn ? <Home /> : <Navigate to='/sign-in' />,
+		},
+		{
+			path: '/update-profile',
+			element: isSignedIn ? <UpdateProfile /> : <Navigate to='/sign-in' />,
+		},
+		{
+			path: '/sign-in',
+			element: <SignIn />,
+		},
+		{
+			path: '/sign-up',
+			element: <SignUp />,
+		},
+		{
+			path: '/forgot-password',
+			element: <ForgotPassword />,
+		},
+	]);
 
-   return routes;
+	return routes;
 };
 
 export default AllRoutes;
