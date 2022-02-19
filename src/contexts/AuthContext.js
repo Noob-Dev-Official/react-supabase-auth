@@ -1,16 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../supabase/supabase';
 
-const AuthContext = createContext({});
+const authContext = createContext({});
 
 export const useAuth = () => {
-	return useContext(AuthContext);
+	return useContext(authContext);
 };
 
 export const AuthProvider = ({ children }) => {
-	const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-	const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
-	const supabase = createClient(supabaseUrl, supabaseKey);
 	const { auth } = supabase;
 
 	const [currentUser, setCurrentUser] = useState();
@@ -21,8 +18,9 @@ export const AuthProvider = ({ children }) => {
 		return auth.signUp({ email: email, password: password });
 	};
 
-	const signin = (email, password) => {
-		return auth.signIn({ email: email, password: password });
+	const signin = async (email, password) => {
+		console.log('signin');
+		return await auth.signIn({ email: email, password: password });
 	};
 
 	const signout = () => {
@@ -70,43 +68,26 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		console.log('1');
-		auth.onAuthStateChange((event, session) => {
-			console.log('onAuthStateChange', { event, session });
-
+		const authState = auth.onAuthStateChange((event, session) => {
 			if (event === 'SIGNED_IN') {
 				initialiseUser();
 				setIsSignedIn(true);
-				console.log('im running');
+			}
+
+			if (event === 'SIGNED_OUT') {
+				setCurrentUser(null);
+				setIsSignedIn(false);
 			}
 		});
 
-		// const unsubscribe = auth.onAuthStateChange((event, session) => {
-		// 	console.log(event, session);
-
-		// 	if (event === 'SIGNED_IN') {
-		// 		initialiseUser();
-		// setIsSignedIn(true);
-		// console.log('im running');
-		// 	}
-		// });
-
 		setLoading(false);
 
-		console.log(isSignedIn);
-
-		return () => {
-			supabase.removeSubscription();
-			console.log('Remove supabase subscription by useEffect unmount');
-		};
-
-		// return unsubscribe;
-		// eslint-disable-next-line
+		return () => authState.data.unsubscribe();
 	}, []);
 
 	return (
-		<AuthContext.Provider value={value}>
+		<authContext.Provider value={value}>
 			{!loading && children}
-		</AuthContext.Provider>
+		</authContext.Provider>
 	);
 };
