@@ -57,18 +57,19 @@ const SignIn = () => {
 		// setLoading(true);
 
 		try {
-			// setError(false);
+			setError(false);
 
 			await signin(email.email, password.password);
 			navigate('/');
 		} catch (err) {
 			setErrorMssg('Cannot Sign In');
-			// setError(true);
+			setError(true);
 			console.log(err);
-			// hideErrorMssg(); //ERROR: this was the problem, need to fix it later - Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
+			hideErrorMssg();
 		}
 
-		// setLoading(false);
+		// setLoading(false); // BUG: this one is causing the following issue: Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
+		//  at SignIn (http://localhost:3000/static/js/bundle.js:1332:76)
 	};
 
 	return (

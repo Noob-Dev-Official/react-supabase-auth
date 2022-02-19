@@ -14,29 +14,28 @@ export const AuthProvider = ({ children }) => {
 	const [isSignedIn, setIsSignedIn] = useState(false);
 	const [loading, setLoading] = useState(true);
 
-	const signup = (email, password) => {
-		return auth.signUp({ email: email, password: password });
+	const signup = async (email, password) => {
+		return await auth.signUp({ email: email, password: password });
 	};
 
 	const signin = async (email, password) => {
-		console.log('signin');
 		return await auth.signIn({ email: email, password: password });
 	};
 
-	const signout = () => {
-		return auth.signOut();
+	const signout = async () => {
+		return await auth.signOut();
 	};
 
 	const resetPassword = (email) => {
 		return auth.api.resetPasswordForEmail(email);
 	};
 
-	const updateEmail = (email) => {
-		return auth.update({ email: email });
+	const updateEmail = async (email) => {
+		return await auth.update({ email: email });
 	};
 
-	const updatePassword = (password) => {
-		return auth.update({ password: password });
+	const updatePassword = async (password) => {
+		return await auth.update({ password: password });
 	};
 
 	const user = () => {
