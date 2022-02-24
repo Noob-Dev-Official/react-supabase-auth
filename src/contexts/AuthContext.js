@@ -1,44 +1,41 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../supabase/supabase';
 
-const AuthContext = createContext({});
+const authContext = createContext({});
 
 export const useAuth = () => {
-   return useContext(AuthContext);
+   return useContext(authContext);
 };
 
 export const AuthProvider = ({ children }) => {
-   const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-   const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
-   const supabase = createClient(supabaseUrl, supabaseKey);
    const { auth } = supabase;
 
    const [currentUser, setCurrentUser] = useState();
    const [isSignedIn, setIsSignedIn] = useState(false);
    const [loading, setLoading] = useState(true);
 
-   const signup = (email, password) => {
-      return auth.signUp({ email: email, password: password });
+   const signup = async (email, password) => {
+      return await auth.signUp({ email: email, password: password });
    };
 
-   const signin = (email, password) => {
-      return auth.signIn({ email: email, password: password });
+   const signin = async (email, password) => {
+      return await auth.signIn({ email: email, password: password });
    };
 
-   const signout = () => {
-      return auth.signOut();
+   const signout = async () => {
+      return await auth.signOut();
    };
 
    const resetPassword = (email) => {
       return auth.api.resetPasswordForEmail(email);
    };
 
-   const updateEmail = (email) => {
-      return auth.update({ email: email });
+   const updateEmail = async (email) => {
+      return await auth.update({ email: email });
    };
 
-   const updatePassword = (password) => {
-      return auth.update({ password: password });
+   const updatePassword = async (password) => {
+      return await auth.update({ password: password });
    };
 
    const user = () => {
@@ -70,40 +67,26 @@ export const AuthProvider = ({ children }) => {
    };
 
    useEffect(() => {
-      auth.onAuthStateChange((event, session) => {
-         console.log('onAuthStateChange', { event, session });
-
+      const authState = auth.onAuthStateChange((event, session) => {
          if (event === 'SIGNED_IN') {
             initialiseUser();
             setIsSignedIn(true);
-            console.log('im running');
+         }
+
+         if (event === 'SIGNED_OUT') {
+            setCurrentUser(null);
+            setIsSignedIn(false);
          }
       });
 
-      // const unsubscribe = auth.onAuthStateChange((event, session) => {
-      // 	console.log(event, session);
-
-      // 	if (event === 'SIGNED_IN') {
-      // 		initialiseUser();
-      // setIsSignedIn(true);
-      // console.log('im running');
-      // 	}
-      // });
-
       setLoading(false);
 
-      return () => {
-         supabase.removeSubscription();
-         console.log('Remove supabase subscription by useEffect unmount');
-      };
-
-      // return unsubscribe;
-      // eslint-disable-next-line
+      return () => authState.data.unsubscribe();
    }, []);
 
    return (
-      <AuthContext.Provider value={value}>
+      <authContext.Provider value={value}>
          {!loading && children}
-      </AuthContext.Provider>
+      </authContext.Provider>
    );
 };

@@ -1,26 +1,26 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import AllRoutes from './AllRoutes';
-import { useAuth } from './contexts/AuthContext';
+import { useAuth } from './contexts/authContext';
 
 import './App.css';
 
 function App() {
-   const { isSignedIn } = useAuth();
+	const { isSignedIn } = useAuth();
 
-   // const routing = useRoutes(AllRoutes(isSignedIn));
+	// const routing = useRoutes(AllRoutes(isSignedIn));
 
-   return (
-      <>
-         <div className='auth-app'>
-            <div className='content'>
-               <Router>
-                  <AllRoutes isSignedIn={isSignedIn} />
-               </Router>
-            </div>
-         </div>
-      </>
-   );
+	return (
+		<>
+			<div className='auth-app'>
+				<div className='content'>
+					<Router>
+						<AllRoutes isSignedIn={isSignedIn} />
+					</Router>
+				</div>
+			</div>
+		</>
+	);
 }
 
 export default App;
