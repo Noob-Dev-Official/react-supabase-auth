@@ -70,8 +70,6 @@ const SignUp = () => {
 				hideErrorMssg();
 			}
 		}
-
-		setLoading(false);
 	};
 
 	const hideErrorMssg = () => {

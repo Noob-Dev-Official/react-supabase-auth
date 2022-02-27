@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -48,6 +48,11 @@ const UpdateProfile = () => {
 	const onFormSubmit = (e) => {
 		e.preventDefault();
 
+		if (!confirmPasswordRef.current.value) {
+			setError(true);
+			setErrorMssg('Passwords do not match!');
+		}
+
 		if (confirmPasswordRef.current.value !== password.password) {
 			setPassword({ password: '' });
 			confirmPasswordRef.current.value = '';
@@ -83,8 +88,6 @@ const UpdateProfile = () => {
 					setLoading(false);
 				});
 		}
-
-		setLoading(false);
 	};
 
 	const hideErrorMssg = () => {
@@ -93,6 +96,12 @@ const UpdateProfile = () => {
 			setErrorMssg('');
 		}, 5000);
 	};
+
+	useEffect(() => {
+		return () => {
+			setLoading(false);
+		};
+	}, []);
 
 	return (
 		<>
@@ -124,7 +133,7 @@ const UpdateProfile = () => {
 							ref={confirmPasswordRef}
 							type='password'
 							name='password'
-							required
+							// required
 						/>
 					</AuthFormPasswordDiv>
 					<AuthFormSubmitBtn
