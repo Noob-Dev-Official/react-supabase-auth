@@ -15,19 +15,46 @@ export const AuthProvider = ({ children }) => {
    const [loading, setLoading] = useState(true);
 
    const signup = async (email, password) => {
-      return await auth.signUp({ email: email, password: password });
+      const { error, user } = await auth.signUp({
+         email: email,
+         password: password,
+      });
+
+      if (error) {
+         console.log(error);
+      }
+
+      return { error, user };
    };
 
    const signin = async (email, password) => {
-      return await auth.signIn({ email: email, password: password });
+      const { error, user } = await auth.signIn({
+         email: email,
+         password: password,
+      });
+
+      if (error) {
+         console.log(error);
+      }
+
+      return { error, user };
    };
 
    const signout = async () => {
-      return await auth.signOut();
+      const { error } = auth.signOut();
+
+      if (error) {
+         console.log(error);
+      }
+
+      setCurrentUser(null);
+      setIsSignedIn(false);
+
+      return { error };
    };
 
    const resetPassword = (email) => {
-      return auth.api.resetPasswordForEmail(email);
+      const { data, error } = auth.api.resetPasswordForEmail(email);
    };
 
    const updateEmail = async (email) => {
