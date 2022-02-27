@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -58,18 +58,19 @@ const SignIn = () => {
 		const signIn = await signin(email.email, password.password);
 
 		if (!signIn.error) {
-			setError(false);
 			navigate('/');
 		} else {
-			setErrorMssg('Cannot Sign In');
+			setErrorMssg(signIn.error.message);
 			setError(true);
-			console.log(signIn.error);
 			hideErrorMssg();
 		}
-
-		setLoading(false); // BUG: this one is causing the following issue: Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-		//  at SignIn (http://localhost:3000/static/js/bundle.js:1332:76)
 	};
+
+	useEffect(() => {
+		return () => {
+			setLoading(false);
+		};
+	}, []);
 
 	return (
 		<>
@@ -98,7 +99,7 @@ const SignIn = () => {
 						/>
 					</AuthFormPasswordDiv>
 					<AuthFormSubmitBtn
-						// disabled={loading}
+						disabled={loading}
 						type='submit'
 						name='submit'
 						value='Sign In'
