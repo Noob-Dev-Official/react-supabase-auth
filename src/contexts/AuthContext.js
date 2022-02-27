@@ -4,116 +4,134 @@ import { supabase } from '../supabase/supabase';
 const authContext = createContext({});
 
 export const useAuth = () => {
-   return useContext(authContext);
+	return useContext(authContext);
 };
 
 export const AuthProvider = ({ children }) => {
-   const { auth } = supabase;
+	const { auth } = supabase;
 
-   const [currentUser, setCurrentUser] = useState();
-   const [isSignedIn, setIsSignedIn] = useState(false);
-   const [loading, setLoading] = useState(true);
+	const [currentUser, setCurrentUser] = useState();
+	const [isSignedIn, setIsSignedIn] = useState(false);
+	const [loading, setLoading] = useState(true);
 
-   const signup = async (email, password) => {
-      const { error, user } = await auth.signUp({
-         email: email,
-         password: password,
-      });
+	const signup = async (email, password) => {
+		const { error, user } = await auth.signUp({
+			email: email,
+			password: password,
+		});
 
-      if (error) {
-         console.log(error);
-      }
+		if (error) {
+			console.log(error);
+		}
 
-      return { error, user };
-   };
+		return { error, user };
+	};
 
-   const signin = async (email, password) => {
-      const { error, user } = await auth.signIn({
-         email: email,
-         password: password,
-      });
+	const signin = async (email, password) => {
+		const { error, user } = await auth.signIn({
+			email: email,
+			password: password,
+		});
 
-      if (error) {
-         console.log(error);
-      }
+		if (error) {
+			console.log(error);
+		}
 
-      return { error, user };
-   };
+		return { error, user };
+	};
 
-   const signout = async () => {
-      const { error } = auth.signOut();
+	const signout = async () => {
+		const { error } = auth.signOut();
 
-      if (error) {
-         console.log(error);
-      }
+		if (error) {
+			console.log(error);
+		}
 
-      setCurrentUser(null);
-      setIsSignedIn(false);
+		setCurrentUser(null);
+		setIsSignedIn(false);
 
-      return { error };
-   };
+		return { error };
+	};
 
-   const resetPassword = (email) => {
-      const { data, error } = auth.api.resetPasswordForEmail(email);
-   };
+	const resetPassword = (email) => {
+		const { data, error } = auth.api.resetPasswordForEmail(email);
 
-   const updateEmail = async (email) => {
-      return await auth.update({ email: email });
-   };
+		if (error) {
+			console.log(error);
+		}
 
-   const updatePassword = async (password) => {
-      return await auth.update({ password: password });
-   };
+		return { error, data };
+	};
 
-   const user = () => {
-      return auth.user();
-   };
+	const updateEmail = async (email) => {
+		const { data, error } = await auth.update({ email: email });
 
-   const initialiseUser = () => {
-      const user = auth.user();
-      let username;
+		if (error) {
+			console.log(error);
+		}
 
-      if (user) {
-         username = user.user_metadata.user_name;
-      }
+		return { error, data };
+	};
 
-      setCurrentUser(user);
-      localStorage.setItem('username', username);
-   };
+	const updatePassword = async (password) => {
+		const { data, error } = await auth.update({ password: password });
 
-   const value = {
-      isSignedIn,
-      currentUser,
-      user,
-      signup,
-      signin,
-      signout,
-      resetPassword,
-      updateEmail,
-      updatePassword,
-   };
+		if (error) {
+			console.log(error);
+		}
 
-   useEffect(() => {
-      const authState = auth.onAuthStateChange((event, session) => {
-         if (event === 'SIGNED_IN') {
-            initialiseUser();
-            setIsSignedIn(true);
-         }
+		return { error, data };
+	};
 
-         if (event === 'SIGNED_OUT') {
-            setCurrentUser(null);
-            setIsSignedIn(false);
-         }
-      });
+	const user = () => {
+		return auth.user();
+	};
 
-      setLoading(false);
+	const initialiseUser = () => {
+		const user = auth.user();
+		let username;
 
-      return () => authState.data.unsubscribe();
-   }, []);
+		if (user) {
+			username = user.user_metadata.user_name;
+		}
 
-   return (
-      <authContext.Provider value={value}>
-         {!loading && children}
-      </authContext.Provider>
-   );
+		setCurrentUser(user);
+		localStorage.setItem('username', username);
+	};
+
+	const value = {
+		isSignedIn,
+		currentUser,
+		user,
+		signup,
+		signin,
+		signout,
+		resetPassword,
+		updateEmail,
+		updatePassword,
+	};
+
+	useEffect(() => {
+		const authState = auth.onAuthStateChange((event, session) => {
+			if (event === 'SIGNED_IN') {
+				initialiseUser();
+				setIsSignedIn(true);
+			}
+
+			if (event === 'SIGNED_OUT') {
+				setCurrentUser(null);
+				setIsSignedIn(false);
+			}
+		});
+
+		setLoading(false);
+
+		return () => authState.data.unsubscribe();
+	}, []);
+
+	return (
+		<authContext.Provider value={value}>
+			{!loading && children}
+		</authContext.Provider>
+	);
 };
