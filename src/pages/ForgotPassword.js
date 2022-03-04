@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -37,22 +37,19 @@ const ForgotPassword = () => {
 	const onFormSubmit = async (e) => {
 		e.preventDefault();
 
-		try {
-			setError(false);
-			setLoading(true);
-			await resetPassword(email.email);
+		setLoading(true);
+		const resetPasswordFunction = await resetPassword(email.email);
 
+		if (!resetPasswordFunction.error) {
 			setSuccess(true);
 			setSuccessMssg('Check your inbox for further instruction.');
 			hideSuccessMssg();
-		} catch (err) {
+		} else {
 			setError(true);
-			setErrorMssg('Failed to reset password');
-			console.log(err);
+			setErrorMssg(resetPasswordFunction.error.message);
+			console.log(resetPasswordFunction.error.message);
 			hideErrorMssg();
 		}
-		console.log('outside error');
-		setLoading(false);
 	};
 
 	const hideErrorMssg = () => {
@@ -68,6 +65,12 @@ const ForgotPassword = () => {
 			setSuccessMssg('');
 		}, 5000);
 	};
+
+	useEffect(() => {
+		return () => {
+			setLoading(false);
+		};
+	}, []);
 
 	return (
 		<>

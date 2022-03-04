@@ -53,8 +53,8 @@ export const AuthProvider = ({ children }) => {
 		return { error };
 	};
 
-	const resetPassword = (email) => {
-		const { data, error } = auth.api.resetPasswordForEmail(email);
+	const resetPassword = async (email) => {
+		const { data, error } = await auth.api.resetPasswordForEmail(email);
 
 		if (error) {
 			console.log(error);
@@ -114,6 +114,7 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		const authState = auth.onAuthStateChange((event, session) => {
 			if (event === 'SIGNED_IN') {
+				console.log('login');
 				initialiseUser();
 				setIsSignedIn(true);
 			}
@@ -121,6 +122,12 @@ export const AuthProvider = ({ children }) => {
 			if (event === 'SIGNED_OUT') {
 				setCurrentUser(null);
 				setIsSignedIn(false);
+			}
+
+			if (event === 'PASSWORD_RECOVERY') {
+				console.log('password recovery');
+				console.log(event);
+				console.log(session);
 			}
 		});
 
