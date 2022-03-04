@@ -48,9 +48,16 @@ const UpdateProfile = () => {
 	const onFormSubmit = (e) => {
 		e.preventDefault();
 
-		if (!confirmPasswordRef.current.value) {
+		if (
+			(!confirmPasswordRef.current.value && password.password) ||
+			(confirmPasswordRef.current.value && !password.password)
+		) {
 			setError(true);
-			setErrorMssg('Passwords do not match!');
+			setErrorMssg('Both the passwords field must be filled out');
+
+			hideErrorMssg();
+
+			return 'Both the passwords field must be filled out';
 		}
 
 		if (confirmPasswordRef.current.value !== password.password) {
